@@ -1,64 +1,74 @@
-# source https://www.geeksforgeeks.org/extract-video-frames-from-webcam-and-save-to-images-using-python/
+#!/usr/bin/env python3.9
+# 
+# Title: grab_images.py
+# Description: Simple script to capture images to create our hand gesture dataset.
+# 
+# References:
+# - https://www.geeksforgeeks.org/extract-video-frames-from-webcam-and-save-to-images-using-python/
+# -------------------------------------------------------------------------------
 import cv2
-  
-# Opens the inbuilt camera of laptop to capture video.
-cap = cv2.VideoCapture(0)
-i = 0
+import os
 
-# for i in list(range(10)):
-#     ret, frame = cap.read()
-      
-#     # This condition prevents from infinite looping 
-#     # incase video ends.
-#     if ret == False:
-#         break
-      
-#     # Save Frame by Frame into disk using imwrite method
-#     cv2.imwrite('dl/' +  'Frame' + str(i) + ".jpg", frame)
-#     i += 1
-  
-for i in list(range(1000)):
-    ret, frame = cap.read()
-      
-    # This condition prevents from infinite looping 
-    # incase video ends.
-    if ret == False:
-        break
-      
-    # Save Frame by Frame into disk using imwrite method
-    cv2.imwrite('stop/' +  'Frame' + str(i) + ".jpg", frame)
-    i += 1
+def menu():
+    opts = {
+            0 : 'Accelerate to the left',
+            1 : 'Don\'t accelerate',
+            2 : 'Accelerate to the right.',
+            3 : 'Exit.'
+        }
+    for option in opts.keys():
+        print(f'{option} -- {opts[option]}')
 
-print("Phase 'stop' done.")
+def captureIMGSet(option, no_imgs_to_capture, out_dir):
+    
+    acronyms = {
+        0 : "ATL", # Accelerate to the left
+        1 : "DA",  # Don't accelerate
+        2 : "ATR"  # Accelerate to the right
+        }
 
-for i in list(range(100)):
-    ret, frame = cap.read()
-      
-    # This condition prevents from infinite looping 
-    # incase video ends.
-    if ret == False:
-        break
-      
-    # Save Frame by Frame into disk using imwrite method
-    cv2.imwrite('back_valid/' +  '1' + str(i) + ".jpg", frame)
-    i += 1
+    # Opens the built camera of laptop to capture video.
+    cap = cv2.VideoCapture(0)
+    for i in range(no_imgs_to_capture):
+        ret, frame = cap.read()
 
-print("Phase 'back' done.")
+        # This condition prevents from infinite looping in case video ends.
+        if ret == False:
+            break
 
-for i in list(range(1000)):
-    ret, frame = cap.read()
-      
-    # This condition prevents from infinite looping 
-    # incase video ends.
-    if ret == False:
-        break
-      
-    # Save Frame by Frame into disk using imwrite method
-    cv2.imwrite('go/' +  'Frame' + str(i) + ".jpg", frame)
-    i += 1
+        # Save frame by frame into disk using imwrite method
+        cv2.imwrite(f'{out_dir}/{acronyms[option]}{i}_{option}.jpg', frame)
+        print(f'{out_dir}/{acronyms[option]}{i}_{option}.jpg ... captured.')
+    print('\n\nCapturing images...done.')
+    print(f'{"-" :->82}')
+    cap.release()
+    cv2.destroyAllWindows()
 
-# print("Phase 'go' done.")
+if __name__ == '__main__':
+    
+    data_dir = 'dataset'
+    dir_check = os.path.isdir(data_dir)
 
-cap.release()
-cv2.destroyAllWindows()
+    if not dir_check:
+        os.makedirs(data_dir)
+        print(f'dataset directory created: {data_dir}')
+    else:
+        print(f'{data_dir} already exists.')
+    
+    while(True):
+        menu()
+        option = ''
+        
+        try:
+            option = int(input('Select option from menu: '))
+        except:
+            print('Wrong option, select valid option.')
+        
+        if option == 3:
+            exit()
+        else:
+            no_imgs_to_capture = int(input('How many images do you want to capture? \n'))
+            print(f'{"-":->82}')
+            captureIMGSet(option, no_imgs_to_capture, data_dir)
+    print(f'IMAGE CAPTURE...DONE.')
 
