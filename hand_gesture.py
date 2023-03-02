@@ -8,10 +8,11 @@ from PIL import Image
 from torch.utils.data import Dataset, DataLoader
 import os
 import torchvision.transforms as transforms
+from torch.autograd import Variable
 
 # paths
-train_data_path = "dl"
-val_data_path = "back_valid"
+train_data_path = r"dset\train"
+val_data_path = r"dset\valid"
 
 # params
 hyperparams = {}
@@ -25,13 +26,13 @@ class SIGNSDataset(Dataset):
         self.filenames = [os.path.join(data_dir, f) for f in self.filenames]
 
         #the first character of the filename contains the label
-        self.labels = [int(filename.split('/')[-1][0]) for filename in self.filenames]
+        self.labels = [int(filename.split(os.sep)[-1][0]) for filename in self.filenames]
         self.transform = transform
 
     def __len__(self):
         #return size of dataset
         return len(self.filenames)
-
+    
     def __getitem__(self, idx):
         #open image, apply transforms and return with label
         image = Image.open(self.filenames[idx])  # PIL image
@@ -54,12 +55,12 @@ val_dataset = SIGNSDataset(val_data_path, eval_transformer)
 # Loading Batches of Data
 
 train_dataloader = DataLoader(SIGNSDataset(train_data_path, train_transformer), 
-                   batch_size=hyperparams.batch_size, shuffle=True,
-                   num_workers=hyperparams.num_workers)
+                   batch_size=hyperparams["batch_size"], shuffle=True,
+                   num_workers=hyperparams["num_workers"])
 
-# for train_batch, labels_batch in train_dataloader:
-#     # wrap Tensors in Variables
-#     train_batch, labels_batch = Variable(train_batch), Variable(labels_batch)
+for train_batch, labels_batch in train_dataloader:
+    # wrap Tensors in Variables
+    train_batch, labels_batch = Variable(train_batch), Variable(labels_batch)
 
-#     # pass through model, perform backpropagation and updates
-#     output_batch = model(train_batch)
+    # pass through model, perform backpropagation and updates
+    output_batch = model(train_batch)
