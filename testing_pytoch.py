@@ -30,6 +30,7 @@ from torch.utils.data.dataloader import DataLoader
 from torchvision.datasets import ImageFolder
 from torch.utils.data import random_split
 from utils import *
+import multiprocessing
 
 random_seed = 42
 torch.manual_seed(random_seed);
@@ -37,23 +38,19 @@ torch.manual_seed(random_seed);
 ### Exploring the dataset
 
 # dataloaders
-train = ImageFolder("input\seg_test", transform = tt.Compose([
-    tt.Resize(64),
-    tt.RandomCrop(64),
-    tt.ToTensor(),
+train = ImageFolder("input\seg_train", transform = tt.Compose([
+    tt.Resize(64), # This resizes the images to 64x64 pixels.
+    tt.RandomCrop(64), # This randomly crops the images to size 64x64 pixels- I don't think this is a neccessary step
+    tt.ToTensor(), # This converts the PIL Image or numpy.ndarray (H x W x C) in the range [0, 255] 
+    # to a PyTorch tensor (C x H x W) in the range [0.0, 1.0].
 ]))
 
-train_dl = DataLoader(train, 64, shuffle=True, num_workers=3, pin_memory=True)
-
+train_dl = DataLoader(dataset = train, batch_size = 64, shuffle=True, num_workers=multiprocessing.cpu_count() - 1, pin_memory=True)
+# I have 16 cores, so I set num_workes=15
 def main():
-    # We will normalize the image tensors by subtracting the mean and 
-    # dividing by the standard deviation across each channel. As a result, 
-    # the mean of the data across each channel is 0, and standard deviation is 1. 
-    # Normalizing the data prevents the values from any one channel from 
-    # disproportionately affecting the losses and gradients while training, 
-    # simply by having a higher or wider range of values that others
-    # mean, std = get_mean_std(train_dl)
+
     stats = get_mean_std(train_dl)
+
     train_transform = tt.Compose([
         tt.Resize(64),
         tt.RandomCrop(64),
@@ -99,9 +96,9 @@ if __name__ == '__main__':
 
     batch_size = 128
 
-    train_dl = DataLoader(train_ds, batch_size, shuffle=True, num_workers=2, pin_memory=True)
-    valid_dl = DataLoader(val_ds, batch_size*2, num_workers=2, pin_memory=True)
-    test_dl = DataLoader(test, batch_size*2, num_workers=2, pin_memory=True)
+    # train_dl = DataLoader(train_ds, batch_size, shuffle=True, num_workers=2, pin_memory=True)
+    # valid_dl = DataLoader(val_ds, batch_size*2, num_workers=2, pin_memory=True)
+    # test_dl = DataLoader(test, batch_size*2, num_workers=2, pin_memory=True)
     print("done")
 
     class DeviceDataLoader():
@@ -120,13 +117,3 @@ if __name__ == '__main__':
             return len(self.dl)
 else:
     print(__name__)
-
-# # PyTorch data loaders
-# batch_size = 128
-
-# train_dl = DataLoader(train_ds, batch_size, shuffle=True, num_workers=2, pin_memory=True)
-# valid_dl = DataLoader(val_ds, batch_size*2, num_workers=2, pin_memory=True)
-# test_dl = DataLoader(test, batch_size*2, num_workers=2, pin_memory=True)
-
-# # mean, std = get_mean_std(train_dl)
-# # print(mean, std)
