@@ -17,6 +17,8 @@ def get_mean_std(dl):
 def denormalize(images, means, stds):
     means = torch.tensor(means).reshape(1, 3, 1, 1)
     stds = torch.tensor(stds).reshape(1, 3, 1, 1)
+    means = means.to('cuda:0')
+    stds = torch.to('cuda:0')
     return images * stds + means
 
 def show_batch(dl, stats, save_path):
@@ -24,6 +26,7 @@ def show_batch(dl, stats, save_path):
         fig, ax = plt.subplots(figsize=(12, 12))
         ax.set_xticks([]); ax.set_yticks([])
         denorm_images = denormalize(images, *stats)
+        denorm_images = denorm_images.cpu()
         ax.imshow(make_grid(denorm_images[:64], nrow=8).permute(1, 2, 0).clamp(0,1))
         plt.savefig(save_path)  # Save the figure to a file
         plt.close(fig) # Close the figure to free up memory

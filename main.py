@@ -38,7 +38,7 @@ def principal():
     # To display the images, we'll need to denormalize the pixels values 
     # to bring them back into the range (0,1).
 
-    train_dl, valid_dl, test_dl, no_of_classes = prepare_data(128)
+    train_dl, valid_dl, test_dl, no_of_classes = prepare_data(32)
 
     save_path = "batch_images.png"
     show_batch(train_dl, stats, save_path)

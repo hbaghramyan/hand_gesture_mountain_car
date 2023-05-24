@@ -3,12 +3,14 @@ from pathlib import Path
 from torch.utils.data import random_split
 from torchvision.datasets import ImageFolder
 from torch.utils.data.dataloader import DataLoader
+from utils_funcs import get_default_device
 
 def prepare_data(batch_size):
     """
     Prepare the data by applying the necessary transformations and 
     splitting it into training and validation datasets.
     """
+    device = get_default_device()
     stats = ((0.4301, 0.4574, 0.4537), (0.2482, 0.2467, 0.2806))
 
     train_transform = tt.Compose([
@@ -34,9 +36,9 @@ def prepare_data(batch_size):
 
     train_ds, val_ds = random_split(train, [train_size, val_size])
 
-    train_dl = DataLoader(train_ds, batch_size, shuffle=True, num_workers=8, pin_memory=True)
-    valid_dl = DataLoader(val_ds, batch_size * 2, num_workers=8, pin_memory=True)
-    test_dl = DataLoader(test, batch_size * 2, num_workers=2, pin_memory=True)
+    train_dl = DeviceDataLoader(DataLoader(train_ds, batch_size, shuffle=True, num_workers=8, pin_memory=True), device)
+    valid_dl = DeviceDataLoader(DataLoader(val_ds, batch_size * 2, num_workers=8, pin_memory=True), device)
+    test_dl = DeviceDataLoader(DataLoader(test, batch_size * 2, num_workers=2, pin_memory=True), device)
 
     no_of_classes = len(train.classes)
 
