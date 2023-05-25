@@ -18,7 +18,7 @@ def denormalize(images, means, stds):
     means = torch.tensor(means).reshape(1, 3, 1, 1)
     stds = torch.tensor(stds).reshape(1, 3, 1, 1)
     means = means.to('cuda:0')
-    stds = torch.to('cuda:0')
+    stds = stds.to('cuda:0')
     return images * stds + means
 
 def show_batch(dl, stats, save_path):

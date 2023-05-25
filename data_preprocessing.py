@@ -4,6 +4,7 @@ from torch.utils.data import random_split
 from torchvision.datasets import ImageFolder
 from torch.utils.data.dataloader import DataLoader
 from utils_funcs import get_default_device
+from utils_classes import DeviceDataLoader
 
 def prepare_data(batch_size):
     """
@@ -28,16 +29,16 @@ def prepare_data(batch_size):
         tt.Normalize(*stats, inplace=True)
     ])
 
-    train = ImageFolder(Path("input") / "seg_train", transform=train_transform)
-    test = ImageFolder(Path("input") / "seg_test", transform=test_transform)
+    train = ImageFolder(Path("hands") / "train", transform=train_transform)
+    test = ImageFolder(Path("hands") / "test", transform=test_transform)
 
     val_size = int(len(train) * 0.2)
     train_size = len(train) - val_size
 
     train_ds, val_ds = random_split(train, [train_size, val_size])
 
-    train_dl = DeviceDataLoader(DataLoader(train_ds, batch_size, shuffle=True, num_workers=8, pin_memory=True), device)
-    valid_dl = DeviceDataLoader(DataLoader(val_ds, batch_size * 2, num_workers=8, pin_memory=True), device)
+    train_dl = DeviceDataLoader(DataLoader(train_ds, batch_size, shuffle=True, num_workers=4, pin_memory=True), device)
+    valid_dl = DeviceDataLoader(DataLoader(val_ds, batch_size * 2, num_workers=4, pin_memory=True), device)
     test_dl = DeviceDataLoader(DataLoader(test, batch_size * 2, num_workers=2, pin_memory=True), device)
 
     no_of_classes = len(train.classes)
