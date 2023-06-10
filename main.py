@@ -27,6 +27,12 @@ from utils_classes import *
 import time
 from data_preprocessing import prepare_data
 
+
+# ARG:
+#   1. Why do we need the random_seed and torch.manual_seed(random_seed) lines?
+#   2. What are stats for? 
+# -----------------------------------------------------------------------------
+
 random_seed = 42
 torch.manual_seed(random_seed);
 
@@ -38,9 +44,11 @@ def principal():
     # To display the images, we'll need to denormalize the pixels values 
     # to bring them back into the range (0,1).
 
+    # ARG Notes:
+    #   * prepare_data(32): 
     train_dl, valid_dl, test_dl, no_of_classes = prepare_data(32)
 
-    save_path = "batch_images.png"
+    save_path = "results/batch_images.png"
     show_batch(train_dl, stats, save_path)
     # print("done")
 
@@ -74,9 +82,9 @@ def principal():
     elapsed_time = end_time - start_time
     print("Elapsed time:", elapsed_time, "seconds")
 
-    plot_losses(history, "loss_vs_epochs.png")
+    plot_losses(history, "results/loss_vs_epochs.png")
 
-    plot_lrs(history, "lr_vs_batch_no.png")
+    plot_lrs(history, "results/lr_vs_batch_no.png")
     print("done")
 
 if __name__ == '__main__':

@@ -29,8 +29,8 @@ def prepare_data(batch_size):
         tt.Normalize(*stats, inplace=True)
     ])
 
-    train = ImageFolder(Path("hands") / "train", transform=train_transform)
-    test = ImageFolder(Path("hands") / "test", transform=test_transform)
+    train = ImageFolder(Path("dataset") / "train", transform=train_transform)
+    test = ImageFolder(Path("dataset") / "test", transform=test_transform)
 
     val_size = int(len(train) * 0.2)
     train_size = len(train) - val_size

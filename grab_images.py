@@ -9,6 +9,7 @@
 import cv2
 import os
 import time
+import datetime
 
 def menu():
     opts = {
@@ -21,32 +22,44 @@ def menu():
         print(f'{option} -- {opts[option]}')
 
 def captureIMGSet(option, no_imgs_to_capture, out_dir):
+    # Get the current time
+    now = datetime.datetime.now()
     
+    # Format it as a string
+    timestamp = now.strftime("%Y%m%d_%H%M%S")
+
     acronyms = {
-        0 : "ATL", # Accelerate to the left
-        1 : "DA",  # Don't accelerate
-        2 : "ATR"  # Accelerate to the right
+        0 : "acc_l", # Accelerate to the left
+        1 : "acc_n",  # Don't accelerate
+        2 : "acc_r"  # Accelerate to the right
         }
 
     # Opens the built camera of laptop to capture video.
     cap = cv2.VideoCapture(0)
     for i in range(no_imgs_to_capture):
         ret, frame = cap.read()
+        
+        # delay between frames
+        time.sleep(0.3)
 
         # This condition prevents from infinite looping in case video ends.
         if ret == False:
             break
 
         # Save frame by frame into disk using imwrite method
-        cv2.imwrite(f'{out_dir}/{acronyms[option]}{i}_{option}.jpg', frame)
-        print(f'{out_dir}/{acronyms[option]}{i}_{option}.jpg ... captured.')
+        path = os.path.join(out_dir, f'{acronyms[option]}_{i}_{option}_{timestamp}.jpg')
+        print(path)
+        cv2.imwrite(path, frame)
+        filename = os.path.basename(path)
+
+        print(f'{filename} ... captured.')
     print('\n\nCapturing images...done.')
     print(f'{"-" :->82}')
     cap.release()
     cv2.destroyAllWindows()
 
 def check_dirs(directory):
-    
+    print(f"type({directory}): {type(directory)}") 
     dir_check = os.path.isdir(directory)
     
     if not dir_check:
@@ -83,17 +96,17 @@ if __name__ == '__main__':
             no_imgs_to_capture = int(input('How many images do you want to capture? \n'))
             print(f'{"-":->82}')
             if option == 0:
-                data_dir  = 'dataset/left'
+                data_dir  = 'try_dataset/'
                 check_dirs(data_dir)
                 #time.sleep(3)
                 captureIMGSet(option, no_imgs_to_capture, data_dir)
             if option == 1:
-                data_dir = 'dataset/stop'
+                data_dir = 'try_dataset/'
                 check_dirs(data_dir)
                 time.sleep(3)
                 captureIMGSet(option, no_imgs_to_capture, data_dir)
             if option == 2:
-                data_dir = 'dataset/right'
+                data_dir = 'try_dataset/'
                 check_dirs(data_dir)
                 time.sleep(3)
                 captureIMGSet(option, no_imgs_to_capture, data_dir)
