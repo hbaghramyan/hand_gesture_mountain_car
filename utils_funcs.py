@@ -3,6 +3,7 @@ import torch.nn as nn
 from torchvision.utils import make_grid
 import matplotlib.pyplot as plt
 import numpy as np
+import os
 
 def get_mean_std(dl):
     sum_, squared_sum, batches = 0,0,0
@@ -77,16 +78,22 @@ def get_lr(optimizer):
         return param_group['lr']
 
 def fit_one_cycle(epochs, max_lr, model, train_loader, val_loader, 
-                  weight_decay=0, grad_clip=None, opt_func=torch.optim.SGD):
+                  weight_decay=0, grad_clip=None, opt_func=torch.optim.SGD,
+                  checkpoint_dir='checkpoints', top_k=3):
     torch.cuda.empty_cache()
     history = []
     
+    # create checkpoint directory if it doesn't exist
+    os.makedirs(checkpoint_dir, exist_ok=True)
+
     # Set up cutom optimizer with weight decay
     optimizer = opt_func(model.parameters(), max_lr, weight_decay=weight_decay)
     # Set up one-cycle learning rate scheduler
     sched = torch.optim.lr_scheduler.OneCycleLR(optimizer, max_lr, epochs=epochs, 
                                                 steps_per_epoch=len(train_loader))
-    
+    # initialize priority quee to keep track of top_k checkpoints
+    top_checkpoints = []
+
     for epoch in range(epochs):
         # Training Phase 
         model.train()
@@ -114,6 +121,11 @@ def fit_one_cycle(epochs, max_lr, model, train_loader, val_loader,
         result['lrs'] = lrs
         model.epoch_end(epoch, result)
         history.append(result)
+
+        # save model checkpoint for the current epoch
+        checkpoint_file = f"{checkpoint_dir}/model_epoch.pth"
+        torch.save(model.state_dict(), checkpoint_file)
+
     return history
 
 def plot_losses(history, save_path):
