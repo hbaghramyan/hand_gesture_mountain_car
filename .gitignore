@@ -1,5 +1,16 @@
+# files
+
 desktop.ini
 .ipynb_checkpoints
 __pycache__
+
+# folders
 .vscode
 input
+images
+preliminary
+dset
+dataset
+try_dataset
+checkpoints
+
