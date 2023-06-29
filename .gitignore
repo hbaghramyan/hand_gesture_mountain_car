@@ -3,6 +3,7 @@
 desktop.ini
 .ipynb_checkpoints
 __pycache__
+Untitled.ipynb
 
 # folders
 .vscode
@@ -13,4 +14,5 @@ dset
 dataset
 try_dataset
 checkpoints
+resources
 
