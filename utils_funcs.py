@@ -5,16 +5,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 import os
 
-def get_mean_std(dl):
-    sum_, squared_sum, batches = 0,0,0
-    for data, _ in dl:
-        sum_ += torch.mean(data, dim = ([0,2,3]))
-        squared_sum += torch.mean(data**2, dim = ([0,2,3]))
-        batches += 1
-    mean = sum_/batches
-    std = (squared_sum/batches - mean**2)**0.5
-    return mean, std
-
 def denormalize(images, means, stds):
     means = torch.tensor(means).reshape(1, 3, 1, 1)
     stds = torch.tensor(stds).reshape(1, 3, 1, 1)

@@ -5,6 +5,7 @@ from torchvision.datasets import ImageFolder
 from torch.utils.data.dataloader import DataLoader
 from utils_funcs import get_default_device
 from utils_classes import DeviceDataLoader
+from get_stats import main as get_stats
 import os
 
 def prepare_data(batch_size):
@@ -13,7 +14,7 @@ def prepare_data(batch_size):
     splitting it into training and validation datasets.
     """
     device = get_default_device()
-    stats = ((0.4301, 0.4574, 0.4537), (0.2482, 0.2467, 0.2806))
+    stats = get_stats()
 
     train_transform = tt.Compose([
         tt.Resize(64),
@@ -30,8 +31,8 @@ def prepare_data(batch_size):
         tt.Normalize(*stats, inplace=True)
     ])
 
-    train = ImageFolder(os.path.join("images", "train"), transform=train_transform)
-    test = ImageFolder(os.path.join("images", "test"), transform=test_transform)
+    train = ImageFolder(r"G:\Meine Ablage\mountain_car\images\train", transform=train_transform)
+    test = ImageFolder(r"G:\Meine Ablage\mountain_car\images\test", transform=test_transform)
 
     val_size = int(len(train) * 0.2)
     train_size = len(train) - val_size

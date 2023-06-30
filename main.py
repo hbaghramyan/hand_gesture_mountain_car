@@ -1,7 +1,7 @@
 # source
 # https://www.kaggle.com/code/mihirpaghdal/intel-image-classification-with-pytorch
 
-### Importing necessary library
+# importing necessary library
 
 import torch
 import torchvision.transforms as tt
@@ -23,13 +23,7 @@ from data_preprocessing import prepare_data
 random_seed = 42
 torch.manual_seed(random_seed);
 
-stats = ((0.4301, 0.4574, 0.4537), (0.2482, 0.2467, 0.2806))
-
-def principal():
-    
-    # Let's take a look at some sample images from the training dataloader. 
-    # To display the images, we'll need to denormalize the pixels values 
-    # to bring them back into the range (0,1).
+def main():
 
     # ARG Notes:
     #   * prepare_data(32): 
@@ -75,7 +69,4 @@ def principal():
     print("done")
 
 if __name__ == '__main__':
-    print(__name__)
-    principal()
-else:
-    print(__name__)
+    main()
