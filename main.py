@@ -1,19 +1,6 @@
 # source
 # https://www.kaggle.com/code/mihirpaghdal/intel-image-classification-with-pytorch
 
-### Introduction
-# This is image data of Natural Scenes around the world.
-
-# This Data contains around 25k images of size 150x150 distributed under 6 categories.
-# - 'buildings' -> 0,
-# - 'forest' -> 1,
-# - 'glacier' -> 2,
-# - 'mountain' -> 3,
-# - 'sea' -> 4,
-# - 'street' -> 5 
-
-# The Train, Test and Prediction data is separated in each zip files. There are around 14k images in Train, 3k in Test and 7k in Prediction.
-
 ### Importing necessary library
 
 import torch
@@ -46,10 +33,10 @@ def principal():
 
     # ARG Notes:
     #   * prepare_data(32): 
-    train_dl, valid_dl, test_dl, no_of_classes = prepare_data(32)
+    train_dl, valid_dl, test_dl, no_of_classes = prepare_data(64)
 
-    save_path = "results/batch_images.png"
-    show_batch(train_dl, stats, save_path)
+    # save_path = "results/batch_images.png"
+    # show_batch(train_dl, stats, save_path)
     # print("done")
 
     # Moving our data into gpu
@@ -66,7 +53,7 @@ def principal():
     history = [evaluate(model, valid_dl)]
     print(history)
 
-    epochs = 12
+    epochs = 1
     max_lr = 0.01
     grad_clip = 0.1
     weight_decay = 1e-4
