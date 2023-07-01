@@ -1,0 +1,7 @@
+hyper_params:
+  n_batch: 64
+  epochs: 1
+  max_lr: 0.01
+  grad_clip: 0.1
+  weight_decay: 1e-4
+  opt_func: 'Adam'

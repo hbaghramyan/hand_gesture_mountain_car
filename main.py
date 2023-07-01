@@ -1,72 +1,92 @@
 # source
 # https://www.kaggle.com/code/mihirpaghdal/intel-image-classification-with-pytorch
 
-# importing necessary library
+# This script provides an implementation of the image classification task using PyTorch. It uses traines a ResNet9
+# It is structured to allow for the training, validation, and testing of the model.
 
-import torch
-import torchvision.transforms as tt
-from torchvision.utils import make_grid
-from torch.utils.data.dataloader import DataLoader
-from torchvision.datasets import ImageFolder
-from torch.utils.data import random_split
-from utils_funcs import *
-from utils_classes import *
+# local function imports
 import time
+import torch
+from omegaconf import OmegaConf
+
+# local function imports
+from utils_funcs import show_batch, get_default_device, to_device, evaluate, fit_one_cycle
+from utils_funcs import plot_losses, plot_lrs
+from utils_funcs import create_parser
+from utils_classes import ResNet9
 from data_preprocessing import prepare_data
+from get_stats import main as get_stats
 
-
-# ARG:
-#   1. Why do we need the random_seed and torch.manual_seed(random_seed) lines?
-#   2. What are stats for? 
-# -----------------------------------------------------------------------------
-
-random_seed = 42
-torch.manual_seed(random_seed);
+# Set seed for generating random numbers for reproducibility
+RANDOM_SEED = 42
+torch.manual_seed(RANDOM_SEED)
 
 def main():
+    
+    """
+    main function that orchestrates the data loading, pre-processing, model training
+    and validation.
+    """
 
-    # ARG Notes:
-    #   * prepare_data(32): 
-    train_dl, valid_dl, test_dl, no_of_classes = prepare_data(64)
+    # create command line parser and parse the command line arguments
+    cmd_parser = create_parser()
+    cmd_args = cmd_parser.parse_args()
 
-    # save_path = "results/batch_images.png"
-    # show_batch(train_dl, stats, save_path)
-    # print("done")
+    # get paths to config files and data from the command line arguments
+    hyper_params_config_path = cmd_args.hyper_params_config_path
+    batch_images_path = cmd_args.batch_images_path
+    loss_image_path = cmd_args.loss_image_path
+    lr_image_path = cmd_args.lr_image_path
 
-    # Moving our data into gpu
+    # load the hyper-parameters config file
+    hyperparam_configs = OmegaConf.load(hyper_params_config_path)
+    hparams = OmegaConf.to_object(hyperparam_configs.hyper_params)
+
+    # get stats for the data
+    stats = get_stats()
+    # prepare the data loaders
+    train_dl, valid_dl, _, no_of_classes = prepare_data(hparams['n_batch'], stats)
+
+    # save a batch of images from the training set
+    show_batch(train_dl, stats, batch_images_path)
+
+    # Get the default device (GPU if available else CPU)
     device = get_default_device()
-    print(device)
+    print(f"The device is {device}.")
 
-    ## Building the model
-    # We will extend `ImageClassificationBase` to develop the `ResNet9` 
-    # model which consist of `Residual Blocks` after every two CNN layer
-
+    # create the model and move it to the device
     model = to_device(ResNet9(3, no_of_classes), device)
-    print(model)
 
+    # evaluate the model on the validation data
     history = [evaluate(model, valid_dl)]
     print(history)
 
-    epochs = 1
-    max_lr = 0.01
-    grad_clip = 0.1
-    weight_decay = 1e-4
-    opt_func = torch.optim.Adam
+    # extract the hyperparameters from the config
+    epochs = hparams['epochs']
+    max_lr = hparams['max_lr']
+    grad_clip = hparams['grad_clip']
+    weight_decay = hparams['weight_decay']
+    opt_func = getattr(torch.optim, hparams['opt_func'])
 
+    # record the start time
     start_time = time.time()
+    # train the model
     history += fit_one_cycle(epochs, max_lr, model, train_dl, valid_dl, 
                              grad_clip=grad_clip, 
                              weight_decay=weight_decay, 
                              opt_func=opt_func)
+    # record the end time
     end_time = time.time()
 
+    # compute and print the elapsed time
     elapsed_time = end_time - start_time
     print("Elapsed time:", elapsed_time, "seconds")
 
-    plot_losses(history, "results/loss_vs_epochs.png")
+    # plot and save the loss vs. epochs graph
+    plot_losses(history, loss_image_path)
 
-    plot_lrs(history, "results/lr_vs_batch_no.png")
-    print("done")
+    # plot and save the learning rate vs. batch number graph
+    plot_lrs(history, lr_image_path)
 
 if __name__ == '__main__':
     main()

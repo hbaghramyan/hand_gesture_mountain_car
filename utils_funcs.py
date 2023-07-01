@@ -4,12 +4,15 @@ from torchvision.utils import make_grid
 import matplotlib.pyplot as plt
 import numpy as np
 import os
+import argparse
 
 def denormalize(images, means, stds):
-    means = torch.tensor(means).reshape(1, 3, 1, 1)
-    stds = torch.tensor(stds).reshape(1, 3, 1, 1)
-    means = means.to('cuda:0')
-    stds = stds.to('cuda:0')
+    means = means.clone().detach()
+    means = means.reshape(1, 3, 1, 1)
+    stds = stds.clone().detach()
+    stds = stds.reshape(1, 3, 1, 1)
+    means = means.to(get_default_device())
+    stds = stds.to(get_default_device())
     return images * stds + means
 
 def show_batch(dl, stats, save_path):
@@ -138,3 +141,39 @@ def plot_lrs(history, save_path):
     plt.title('Learning Rate vs. Batch no.')
     plt.savefig(save_path)  # Save the figure to a file
     plt.close() # Close the figure to free up memory
+
+def create_parser():
+    """
+    Create a parser for command line arguments.
+    """
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument(
+        "--hyper_params_config_path",
+        help="path to hyper-parameters config file",
+        type=str,
+        required=True,
+    )
+
+    parser.add_argument(
+        "--batch_images_path",
+        help="path to save batch of images",
+        type=str,
+        required=True,
+    )
+
+    parser.add_argument(
+        "--loss_image_path",
+        help="path to save loss plot",
+        type=str,
+        required=True,
+    )
+
+    parser.add_argument(
+        "--lr_image_path",
+        help="path to save learning rate plot",
+        type=str,
+        required=True,
+    )
+
+    return parser

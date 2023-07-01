@@ -5,16 +5,13 @@ from torchvision.datasets import ImageFolder
 from torch.utils.data.dataloader import DataLoader
 from utils_funcs import get_default_device
 from utils_classes import DeviceDataLoader
-from get_stats import main as get_stats
-import os
 
-def prepare_data(batch_size):
+def prepare_data(batch_size, stats):
     """
     Prepare the data by applying the necessary transformations and 
     splitting it into training and validation datasets.
     """
     device = get_default_device()
-    stats = get_stats()
 
     train_transform = tt.Compose([
         tt.Resize(64),

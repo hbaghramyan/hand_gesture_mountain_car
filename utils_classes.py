@@ -43,7 +43,11 @@ class ImageClassificationBase(nn.Module):
     def epoch_end(self, epoch, result):
         print("Epoch [{}], last_lr: {:.5f}, train_loss: {:.4f}, val_loss: {:.4f}, val_acc: {:.4f}".format(
             epoch, result['lrs'][-1], result['train_loss'], result['val_loss'], result['val_acc']))
-        
+
+## Building the model
+# We will extend `ImageClassificationBase` to develop the `ResNet9` 
+# model which consist of `Residual Blocks` after every two CNN layer
+
 class ResNet9(ImageClassificationBase):
         def __init__(self, in_channels, num_classes):
             super().__init__()
