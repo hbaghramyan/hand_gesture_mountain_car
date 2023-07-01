@@ -49,7 +49,7 @@ class ImageClassificationBase(nn.Module):
 # model which consist of `Residual Blocks` after every two CNN layer
 
 class ResNet9(ImageClassificationBase):
-        def __init__(self, in_channels, num_classes):
+        def __init__(self, num_classes, in_channels = 3):
             super().__init__()
             
             self.conv1 = conv_block(in_channels, 64)

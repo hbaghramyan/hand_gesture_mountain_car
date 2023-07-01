@@ -9,7 +9,7 @@ import time
 import torch
 from omegaconf import OmegaConf
 
-# local function imports
+# local imports
 from utils_funcs import show_batch, get_default_device, to_device, evaluate, fit_one_cycle
 from utils_funcs import plot_losses, plot_lrs
 from utils_funcs import create_parser
@@ -22,7 +22,7 @@ RANDOM_SEED = 42
 torch.manual_seed(RANDOM_SEED)
 
 def main():
-    
+
     """
     main function that orchestrates the data loading, pre-processing, model training
     and validation.
@@ -55,7 +55,7 @@ def main():
     print(f"The device is {device}.")
 
     # create the model and move it to the device
-    model = to_device(ResNet9(3, no_of_classes), device)
+    model = to_device(ResNet9(no_of_classes), device)
 
     # evaluate the model on the validation data
     history = [evaluate(model, valid_dl)]
