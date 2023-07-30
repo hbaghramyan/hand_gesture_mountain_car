@@ -7,4 +7,7 @@
 - you can download the files from https://www.kaggle.com/code/mihirpaghdal/intel-image-classification-with-pytorch/input
 
 ## HB
-    Finish up the script for classification
+    convert to pytorch-lightning
+    train - Add 500 images for each cathegory
+    test - add 100 images for each cathegorys
+    comment get_stats and unit_classes.py

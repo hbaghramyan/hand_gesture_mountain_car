@@ -14,7 +14,7 @@ device = get_default_device()
 stats = ((0.4301, 0.4574, 0.4537), (0.2482, 0.2467, 0.2806))
 
 model = ResNet9(3, 3)
-model.load_state_dict(torch.load('checkpoints/model_epoch.pth'))
+model.load_state_dict(torch.load('checkpoints/model_epoch_HB_01_07_2023.pth'))
 model.eval()
 
 print(model)
