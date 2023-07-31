@@ -1,13 +1,13 @@
 # TODOS
 
 ## ARG
-- Add CLI args to better control grab\_images.py flow.
-- Save image dataset into LMDB/HDF5 - I don't think we shoudl do this
-- addapt the intel-image-classification-with-pytorch.ipynb: source - https://www.kaggle.com/code/mihirpaghdal/intel-image-classification-with-pytorch
-- you can download the files from https://www.kaggle.com/code/mihirpaghdal/intel-image-classification-with-pytorch/input
+- enviar el checkpoint
+- mountain-car-play, hand_gesture_control
 
 ## HB
-    convert to pytorch-lightning
+    comment get_stats and unit_classes.py, unit_funcs
     train - Add 500 images for each cathegory
-    test - add 100 images for each cathegorys
-    comment get_stats and unit_classes.py
+    test - add 100 images for each cathegory
+    change checkpoint save formate to include datetime
+    remove images folder
+    convert to pytorch-lightning
