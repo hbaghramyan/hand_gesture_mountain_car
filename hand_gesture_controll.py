@@ -1,3 +1,19 @@
+# File Name: hand_gesture_control.py
+#
+# Description: This script instantiates the ResNet9 model defined in utils_classes.py
+# and loads our latest checkpoint generated after training. The model is set to eval() 
+# mode to generate predictions on frames captured by the webcam using OpenCV.
+# Based on the detected class a Keyboard signal is sent to emulate the desired behavior of
+# mountain car action space.
+#
+# Class 0 (GO LEFT) sends a "left arrow" key signal
+# Class 1 (DONT MOVE) sends a "down arrow" key signal
+# Class 2 (GO RIGHT) sends a "right arrow" key signal
+#
+# The sent signals to stdin are then read by src/mountain_car_play.py to controll the 
+# mountain car and play the game. 
+#---------------------------------------------------------------------------------------
+
 from pathlib import Path
 from PIL import Image
 from torchvision.datasets import ImageFolder
@@ -11,12 +27,20 @@ from pynput.keyboard import Key, Controller
 keyboard = Controller()
 
 device = get_default_device()
+
+
+# The stats must not be hard coded. Update this to get stats from
+# Henrikh's script. 
 stats = ((0.4301, 0.4574, 0.4537), (0.2482, 0.2467, 0.2806))
 
+# 1. instantiate the ResNet9 class. 
+# 2. Load checkpoint to the model.
+# 3. Set model to eval state. 
 model = ResNet9(3, 3)
 model.load_state_dict(torch.load('checkpoints/model_epoch_HB_01_07_2023.pth'))
 model.eval()
 
+# Log to console the model structure and initialization
 print(model)
 
 
@@ -28,6 +52,8 @@ thickness = 2
 
 cap = cv2.VideoCapture(0) 
 
+# Define the same set of transformations applied during training 
+# to the captured frame. 
 transform = tt.Compose([
     tt.Resize(64),
     tt.RandomCrop(64),
@@ -36,6 +62,7 @@ transform = tt.Compose([
     tt.Normalize(*stats, inplace=True)
 ])
 
+# Define the class names. 
 class_names = ['GO LEFT', 'DONT MOVE', 'GO RIGHT']
 while True:
     ret, frame = cap.read()
@@ -46,7 +73,6 @@ while True:
     
     # Class names
     
-
     # Perform inference
     with torch.no_grad():
         output = model(input_tensor)
