@@ -15,6 +15,10 @@ import sys
 
 class Car():
     def __init__(self, env):
+        # Initialize the Car class.
+        # Args: 
+        #   env: MountainCar-v0 environment
+
         # Action size = 3
         # Go left, Go right, Don't move
         self.action_size = env.action_space.n
@@ -26,6 +30,12 @@ class Car():
         self.K_DOWN  = 1 # No acceleration: Action(1)
 
     def get_action(self, pressed_key):
+        # Map pressed key to a corresponding action.
+        # Args:
+        #   pressed_key: Key code of the pressed key
+        # Returns:
+        #   int: Action corresponding to the pressed key
+
         # Handle the pressed key actions
         # return the current action mapped to the pressed key
         if pressed_key == self.K_LEFT:
@@ -37,40 +47,50 @@ class Car():
         
         return action
         
-
+# Create the MountainCar-v0 environment
 env = gym.make('MountainCar-v0', render_mode='human')
 env.reset()
+
+# Instantiate the Car class
 car = Car(env)
+
+# Render the environment 
 env.render()
 
-
+# Main loop
 while True:
+    # Event handling
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
         if event.type == pygame.KEYDOWN:
+           # Check for key presses
            if event.key == pygame.K_LEFT:
                 print('LEFT KEY PRESSED')
                 pressed_key = 0
-                action = car.get_action(pressed_key)
-                observation, reward, terminated, truncated, info = env.step(action)
-                env.render()
            if event.key == pygame.K_RIGHT:
                 print('RIGHT KEY PRESSED')
                 pressed_key = 2
-                action = car.get_action(pressed_key)
-                observation, reward, terminated, truncated, info = env.step(action)
-                env.render()
            if event.key == pygame.K_DOWN:
                 print('DOWN KEY PRESSED')
                 pressed_key = 1
-                action = car.get_action(pressed_key)
-                observation, reward, terminated, truncated, info = env.step(action)
-                env.render()
+                
+           # Get corresponding action from the Car class
+           action = car.get_action(pressed_key)
+
+           # Take a step in the environment
+           observation, reward, terminated, truncated, info = env.step(action)
+           
+           # Render the environment
+           env.render() 
+           
+           # Print the observation, reward, and info
            if terminated or truncated:
                 print(f'Observation: {observation}, Reward: {reward}, Info: {info}')
                 observation, info = env.reset()
+
+# Pause to control loop speed
 time.sleep(10)
 
 

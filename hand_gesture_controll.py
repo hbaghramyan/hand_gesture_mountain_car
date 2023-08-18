@@ -43,7 +43,7 @@ model.eval()
 # Log to console the model structure and initialization
 print(model)
 
-
+# Set font parameters to display in frame
 font = cv2.FONT_HERSHEY_SIMPLEX
 font_scale = 1.0
 font_color = (0, 255, 0)
@@ -62,13 +62,16 @@ transform = tt.Compose([
     tt.Normalize(*stats, inplace=True)
 ])
 
-# Define the class names. 
+# class_names list with strings indicating the action to performed based on the prediction.
+# For example: If the current gesture is the index finger, then the predicted class will be 2
+# and "GO RIGHT" will be the current action performed by the MountainCar. 
 class_names = ['GO LEFT', 'DONT MOVE', 'GO RIGHT']
 while True:
     ret, frame = cap.read()
 
     # Preprocess the frame
     pil_image = Image.fromarray(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
+    # Apply previously defined transforms to the current frame
     input_tensor = transform(pil_image).unsqueeze(0)
     
     # Class names
@@ -82,19 +85,18 @@ while True:
     class_index = predicted.item()
     print(class_index, class_names[class_index])
     
+    # Display recognized gesture on frame
     cv2.putText(frame, class_names[class_index], text_position, font, font_scale, thickness)
     cv2.imshow('Hand gesture controll demo...', frame)
     
+    # Perform action based on the recognized gesture.
     if class_index == 0:
-         #print('LEFT KEY PRESSED')
          keyboard.press(Key.left)
          keyboard.release(Key.left)
     if class_index == 1: 
-         #print('DOWN KEY PRESSED')
          keyboard.press(Key.down)
          keyboard.release(Key.down)
     if class_index == 2:
-         #print('RIGHT KEY PRESSED')
          keyboard.press(Key.right)
          keyboard.release(Key.right)
 
