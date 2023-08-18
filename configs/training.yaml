@@ -1,7 +1,7 @@
-hyper_params:
-  n_batch: 64
-  epochs: 10
-  max_lr: 0.01
-  grad_clip: 0.1
-  weight_decay: 1e-4
-  opt_func: 'Adam'
+n_batch: 64
+epochs: 10
+max_lr: 0.01
+grad_clip: 0.1
+weight_decay: 1e-4
+opt_func: 'Adam'
+train_path: 'G:/Meine Ablage/mountain_car/images/train'

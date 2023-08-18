@@ -10,7 +10,13 @@ import torch
 from omegaconf import OmegaConf
 
 # local imports
-from utils_funcs import show_batch, get_default_device, to_device, evaluate, fit_one_cycle
+from utils_funcs import (
+    show_batch,
+    get_default_device,
+    to_device,
+    evaluate,
+    fit_one_cycle,
+)
 from utils_funcs import plot_losses, plot_lrs
 from utils_funcs import create_parser
 from utils_classes import ResNet9
@@ -21,8 +27,8 @@ from get_stats import main as get_stats
 RANDOM_SEED = 42
 torch.manual_seed(RANDOM_SEED)
 
-def main():
 
+def main():
     """
     main function that orchestrates the data loading, pre-processing, model training
     and validation.
@@ -39,13 +45,19 @@ def main():
     lr_image_path = cmd_args.lr_image_path
 
     # load the hyper-parameters config file
-    hyperparam_configs = OmegaConf.load(hyper_params_config_path)
-    hparams = OmegaConf.to_object(hyperparam_configs.hyper_params)
+    train_configs = OmegaConf.load(hyper_params_config_path)
+    train_configs = OmegaConf.to_object(train_configs)
 
     # get stats for the data
-    stats = get_stats()
+    # training path
+    # train_path = train_configs["train_path"]
+    # stats = get_stats(train_path)
+    stats = (
+        torch.Tensor([0.6537, 0.5984, 0.5382]),
+        torch.Tensor([0.2901, 0.2970, 0.2958]),
+    )
     # prepare the data loaders
-    train_dl, valid_dl, _, no_of_classes = prepare_data(hparams['n_batch'], stats)
+    train_dl, valid_dl, no_of_classes = prepare_data(train_configs["n_batch"], stats)
 
     # save a batch of images from the training set
     show_batch(train_dl, stats, batch_images_path)
@@ -62,19 +74,25 @@ def main():
     print(history)
 
     # extract the hyperparameters from the config
-    epochs = hparams['epochs']
-    max_lr = hparams['max_lr']
-    grad_clip = hparams['grad_clip']
-    weight_decay = hparams['weight_decay']
-    opt_func = getattr(torch.optim, hparams['opt_func'])
+    epochs = train_configs["epochs"]
+    max_lr = train_configs["max_lr"]
+    grad_clip = train_configs["grad_clip"]
+    weight_decay = train_configs["weight_decay"]
+    opt_func = getattr(torch.optim, train_configs["opt_func"])
 
     # record the start time
     start_time = time.time()
     # train the model
-    history += fit_one_cycle(epochs, max_lr, model, train_dl, valid_dl, 
-                             grad_clip=grad_clip, 
-                             weight_decay=weight_decay, 
-                             opt_func=opt_func)
+    history += fit_one_cycle(
+        epochs,
+        max_lr,
+        model,
+        train_dl,
+        valid_dl,
+        grad_clip=grad_clip,
+        weight_decay=weight_decay,
+        opt_func=opt_func,
+    )
     # record the end time
     end_time = time.time()
 
@@ -88,5 +106,6 @@ def main():
     # plot and save the learning rate vs. batch number graph
     plot_lrs(history, lr_image_path)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()

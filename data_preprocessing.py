@@ -36,10 +36,10 @@ def prepare_data(batch_size, stats):
 
     train_ds, val_ds = random_split(train, [train_size, val_size])
 
-    train_dl = DeviceDataLoader(DataLoader(train_ds, batch_size, shuffle=True, num_workers=4, pin_memory=True), device)
-    valid_dl = DeviceDataLoader(DataLoader(val_ds, batch_size * 2, num_workers=4, pin_memory=True), device)
-    test_dl = DeviceDataLoader(DataLoader(test, batch_size * 2, num_workers=2, pin_memory=True), device)
+    train_dl = DeviceDataLoader(DataLoader(train_ds, batch_size, shuffle=True, num_workers=8, pin_memory=True), device)
+    valid_dl = DeviceDataLoader(DataLoader(val_ds, batch_size * 2, num_workers=2, pin_memory=True), device)
+    # test_dl = DeviceDataLoader(DataLoader(test, batch_size * 2, num_workers=2, pin_memory=True), device)
 
     no_of_classes = len(train.classes)
 
-    return train_dl, valid_dl, test_dl, no_of_classes
+    return train_dl, valid_dl, no_of_classes

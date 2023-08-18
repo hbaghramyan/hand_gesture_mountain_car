@@ -1,4 +1,3 @@
-from pathlib import Path
 from PIL import Image
 from torchvision.datasets import ImageFolder
 from utils_funcs import get_default_device
