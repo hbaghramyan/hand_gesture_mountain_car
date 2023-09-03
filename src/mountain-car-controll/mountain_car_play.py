@@ -7,11 +7,12 @@
 #  2. https://www.geeksforgeeks.org/pygame-event-handling/
 ####################################################################
 
+import time
+import sys
+
 import pygame
 import gym
 from gym.utils.play import play
-import time
-import sys
 
 class Car():
     def __init__(self, env):

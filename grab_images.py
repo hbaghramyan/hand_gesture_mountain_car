@@ -6,10 +6,13 @@
 # References:
 # - https://www.geeksforgeeks.org/extract-video-frames-from-webcam-and-save-to-images-using-python/
 # -------------------------------------------------------------------------------
-import cv2
+# nativ imports
 import os
 import time
 import datetime
+
+# third party imports
+import cv2
 
 def menu():
     opts = {

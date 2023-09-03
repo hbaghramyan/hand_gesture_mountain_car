@@ -1,5 +1,4 @@
 import torchvision.transforms as tt
-from pathlib import Path
 from torch.utils.data import random_split
 from torchvision.datasets import ImageFolder
 from torch.utils.data.dataloader import DataLoader
