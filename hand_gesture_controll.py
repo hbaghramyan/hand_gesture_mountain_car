@@ -28,14 +28,24 @@ keyboard = Controller()
 
 device = get_default_device()
 
+
 # Define an enumeration for gesture classes
 class Gesture(Enum):
     GO_LEFT = 0
     DONT_MOVE = 1
     GO_RIGHT = 2
 
+
 class GestureRecognizer:
-    def __init__(self, model_path: str, font, font_scale: float, font_color: Tuple[int, int, int], text_position: Tuple[int, int], thickness: int):
+    def __init__(
+        self,
+        model_path: str,
+        font,
+        font_scale: float,
+        font_color: Tuple[int, int, int],
+        text_position: Tuple[int, int],
+        thickness: int,
+    ):
         """
         Initialize the GestureRecognizer.
 
@@ -47,7 +57,7 @@ class GestureRecognizer:
             text_position (Tuple[int, int]): Position to display text in frame.
             thickness (int): Thickness of the displayed text.
         """
-        self.model = ResNet9(3,3)
+        self.model = ResNet9(3, 3)
         self.model.load_state_dict(torch.load(model_path))
         self.model.eval()
 
@@ -57,7 +67,7 @@ class GestureRecognizer:
         self.text_position = text_position
         self.thickness = thickness
         self.keyboard = keyboard
-    
+
     def preprocess_frame(self, frame):
         """
         Preprocess the input frame.
@@ -72,25 +82,27 @@ class GestureRecognizer:
 
         # Define the same set of transformations applied during training
         # to the captured frame.
-        transform = tt.Compose([
-            tt.Resize(64),
-            tt.RandomCrop(64),
-            tt.RandomHorizontalFlip(),
-            tt.ToTensor(),
-            tt.Normalize(*stats, inplace=True),
-        ])
+        transform = tt.Compose(
+            [
+                tt.Resize(64),
+                tt.RandomCrop(64),
+                tt.RandomHorizontalFlip(),
+                tt.ToTensor(),
+                tt.Normalize(*stats, inplace=True),
+            ]
+        )
 
         pil_image = Image.fromarray(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
         input_tensor = transform(pil_image).unsqueeze(0)
         return input_tensor
-    
+
     def recognize_gesture(self, frame):
         """
         Recognize the gesture from the input frame.
 
         Args:
             frame: Input frame captured from the video source.
-        
+
         Returns:
             int: Predcited class index representing the recognized gesture.
         """
@@ -98,12 +110,12 @@ class GestureRecognizer:
 
         with torch.no_grad():
             output = self.model(input_tensor)
-        
+
         _, predicted = torch.max(output, 1)
         class_index = predicted.item()
 
         return class_index
-    
+
     def handle_gesture(self, gesture):
         """
         Perform action based on the recognized gesture.
@@ -124,12 +136,12 @@ class GestureRecognizer:
 
 # Instantiate the GestureRecognizer
 recognizer = GestureRecognizer(
-    model_path='checkpoints/model_epoch_HB_01_07_2023.pth',
+    model_path="checkpoints/model_epoch_HB_01_07_2023.pth",
     font=cv2.FONT_HERSHEY_SIMPLEX,
     font_scale=1.0,
     font_color=(0, 255, 0),
     text_position=(100, 200),
-    thickness=2
+    thickness=2,
 )
 
 # Open the video capture
@@ -139,16 +151,24 @@ while True:
     ret, frame = cap.read()
     if not ret:
         break
-    
+
     # Recognize gesture and handle action
     class_index = recognizer.recognize_gesture(frame)
     recognizer.handle_gesture(Gesture(class_index))
-    
+
     # Display recognized gesture on the frame
-    cv2.putText(frame, str(Gesture(class_index)), recognizer.text_position, recognizer.font, recognizer.font_scale, recognizer.font_color, recognizer.thickness)
-    cv2.imshow('Hand gesture control demo', frame)
-    
-    if cv2.waitKey(1) & 0xFF == ord('q'):
+    cv2.putText(
+        frame,
+        str(Gesture(class_index)),
+        recognizer.text_position,
+        recognizer.font,
+        recognizer.font_scale,
+        recognizer.font_color,
+        recognizer.thickness,
+    )
+    cv2.imshow("Hand gesture control demo", frame)
+
+    if cv2.waitKey(1) & 0xFF == ord("q"):
         break
 
 # Release video capture and close windows
