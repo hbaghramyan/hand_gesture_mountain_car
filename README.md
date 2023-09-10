@@ -22,6 +22,9 @@ To properly control the MountainCar using hand gestures, ensure you run both scr
 1. `hand_gesture_control.py` 
 2. `src/mountain-car-control/mountain_car_play.py`
 
+When `gesture-controll.py` starts recognizing your hand you can now run `mountain-car-play.py`. The game window
+will now be displayed. Click on the window and then start moving your index finger to left or right.
+
 ### hand_gesture_control.py
 
 This script initializes the ResNet9 model from `utils_classes.py` and loads our latest trained checkpoint. Once set in evaluation mode, it captures video frames in real-time and predicts hand gestures. Depending on the recognized gesture, a corresponding keyboard signal is sent:
