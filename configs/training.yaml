@@ -1,5 +1,5 @@
 n_batch: 64
-epochs: 10
+epochs: 20
 max_lr: 0.01
 grad_clip: 0.1
 weight_decay: 1e-4

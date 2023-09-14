@@ -17,7 +17,7 @@ A collaborative space to implement hand gesture control for OpenAI Gym's classic
 
 ## Execution
 
-To properly control the MountainCar using hand gestures, ensure you run both scripts simultaneously:
+To properly control the MountainCar using hand gestures, ensure you run the scripts at the same time:
 
 1. `hand_gesture_control.py` 
 2. `src/mountain-car-control/mountain_car_play.py`

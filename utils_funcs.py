@@ -210,7 +210,7 @@ def fit_one_cycle(
         history.append(result)
 
         # save model checkpoint for the current epoch
-        checkpoint_file = f"{checkpoint_dir}/model_epoch.pth"
+        checkpoint_file = f"{checkpoint_dir}/model_epoch_HB_01_07_2023.pth"
         torch.save(model.state_dict(), checkpoint_file)
 
     return history
