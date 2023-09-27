@@ -115,17 +115,17 @@ def main():
                 data_dir = "try_dataset/"
                 check_dirs(data_dir)
                 time.sleep(3)
-                capture_img_set(option, no_imgs_to_capture, data_dir)
+                capture_img_set(option, no_imgs_to_capture, os.path.join(data_dir, "acc_l"))
             if option == 1:
                 data_dir = "try_dataset/"
                 check_dirs(data_dir)
                 time.sleep(3)
-                capture_img_set(option, no_imgs_to_capture, data_dir)
+                capture_img_set(option, no_imgs_to_capture, os.path.join(data_dir, "acc_n"))
             if option == 2:
                 data_dir = "try_dataset/"
                 check_dirs(data_dir)
                 time.sleep(3)
-                capture_img_set(option, no_imgs_to_capture, data_dir)
+                capture_img_set(option, no_imgs_to_capture, os.path.join(data_dir, "acc_r"))
 
     print("IMAGE CAPTURE...DONE.")
 

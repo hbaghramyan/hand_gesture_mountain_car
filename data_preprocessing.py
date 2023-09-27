@@ -13,22 +13,20 @@ def prepare_data(batch_size, stats):
     device = get_default_device()
 
     train_transform = tt.Compose([
-        tt.Resize(64),
-        tt.RandomCrop(64),
-        tt.RandomHorizontalFlip(),
+        tt.Resize((64, 48)),
         tt.ToTensor(),
-        tt.Normalize(*stats, inplace=True)
+        tt.Normalize(*stats, inplace=True),
     ])
 
-    test_transform = tt.Compose([
-        tt.Resize(64),
-        tt.RandomCrop(64),
-        tt.ToTensor(),
-        tt.Normalize(*stats, inplace=True)
-    ])
+    # test_transform = tt.Compose([
+    #     tt.Resize(64),
+    #     tt.RandomCrop(64),
+    #     tt.ToTensor(),
+    #     tt.Normalize(*stats, inplace=True)
+    # ])
 
-    train = ImageFolder(r"G:\Meine Ablage\mountain_car\images\train", transform=train_transform)
-    test = ImageFolder(r"G:\Meine Ablage\mountain_car\images\test", transform=test_transform)
+    train = ImageFolder(r"G:\Meine Ablage\mountain_car\images_new\train", transform=train_transform)
+    # test = ImageFolder(r"G:\Meine Ablage\mountain_car\images\test", transform=test_transform)
 
     val_size = int(len(train) * 0.2)
     train_size = len(train) - val_size
