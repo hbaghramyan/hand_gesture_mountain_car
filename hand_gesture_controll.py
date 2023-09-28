@@ -14,6 +14,7 @@
 # mountain car and play the game.
 # ---------------------------------------------------------------------------------------
 
+import pickle
 from PIL import Image
 import torch
 import torchvision.transforms as tt
@@ -27,6 +28,9 @@ from utils_classes import ResNet9
 keyboard = Controller()
 
 device = get_default_device()
+
+with open("stats.pkl", "rb") as file:
+    stats_saved = pickle.load(file)
 
 
 # Define an enumeration for gesture classes
@@ -45,6 +49,7 @@ class GestureRecognizer:
         font_color: Tuple[int, int, int],
         text_position: Tuple[int, int],
         thickness: int,
+        stats,
     ):
         """
         Initialize the GestureRecognizer.
@@ -67,6 +72,8 @@ class GestureRecognizer:
         self.text_position = text_position
         self.thickness = thickness
         self.keyboard = keyboard
+        self.stats = stats
+        self.class_index = None
 
     def preprocess_frame(self, frame):
         """
@@ -78,17 +85,14 @@ class GestureRecognizer:
         Returns:
             torch.Tensor: Preprocessed input tensor for the model.
         """
-        stats = ((0.4301, 0.4574, 0.4537), (0.2482, 0.2467, 0.2806))
 
         # Define the same set of transformations applied during training
         # to the captured frame.
         transform = tt.Compose(
             [
-                tt.Resize(64),
-                tt.RandomCrop(64),
-                tt.RandomHorizontalFlip(),
+                tt.Resize((64, 48)),
                 tt.ToTensor(),
-                tt.Normalize(*stats, inplace=True),
+                tt.Normalize(*self.stats, inplace=True),
             ]
         )
 
@@ -112,9 +116,9 @@ class GestureRecognizer:
             output = self.model(input_tensor)
 
         _, predicted = torch.max(output, 1)
-        class_index = predicted.item()
+        self.class_index = predicted.item()
 
-        return class_index
+        return self.class_index
 
     def handle_gesture(self, gesture):
         """
@@ -142,6 +146,7 @@ recognizer = GestureRecognizer(
     font_color=(0, 255, 0),
     text_position=(100, 200),
     thickness=2,
+    stats=stats_saved
 )
 
 # Open the video capture

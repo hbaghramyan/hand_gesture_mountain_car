@@ -5,6 +5,7 @@
 # It is structured to allow for the training, validation, and testing of the model.
 
 # local function imports
+import pickle
 import time
 import torch
 from omegaconf import OmegaConf
@@ -57,6 +58,9 @@ def main():
     #     torch.Tensor([0.2901, 0.2970, 0.2958]),
     # )
     # prepare the data loaders
+    with open("stats.pkl", "wb") as file:
+        pickle.dump(stats, file)
+
     train_dl, valid_dl, no_of_classes = prepare_data(train_configs["n_batch"], stats)
 
     # save a batch of images from the training set
