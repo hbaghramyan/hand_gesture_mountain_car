@@ -61,7 +61,7 @@ def main():
     with open("stats.pkl", "wb") as file:
         pickle.dump(stats, file)
 
-    train_dl, valid_dl, no_of_classes = prepare_data(train_configs["n_batch"], stats)
+    train_dl, valid_dl, no_of_classes = prepare_data(train_configs["n_batch"], stats, train_path)
 
     # save a batch of images from the training set
     show_batch(train_dl, stats, batch_images_path)
