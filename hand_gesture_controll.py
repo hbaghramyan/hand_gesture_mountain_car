@@ -140,7 +140,7 @@ class GestureRecognizer:
 
 # Instantiate the GestureRecognizer
 recognizer = GestureRecognizer(
-    model_path="checkpoints/model_epoch_HB_01_07_2023.pth",
+    model_path="checkpoints/model_epoch_20231129-172457.pth",
     font=cv2.FONT_HERSHEY_SIMPLEX,
     font_scale=1.0,
     font_color=(0, 255, 0),
