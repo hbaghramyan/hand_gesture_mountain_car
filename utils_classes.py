@@ -2,7 +2,41 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from utils_funcs import to_device, accuracy, conv_block
+import pygame
 
+class Car:
+    def __init__(self, env):
+        """
+        Initialize the Car class.
+
+        Args:
+           env: MountainCar-v0 environment
+        """
+        # Action size = 3
+        # Go left, Go right, Don't move
+        self.action_size = env.action_space.n
+        print(f"MountainCAr-v0 action size: {self.action_size}")
+
+        # Define actions in a key map
+        self.KEY_MAPPING = {
+            pygame.K_LEFT: 0,  # Accelerating to the left: Action(0)
+            pygame.K_RIGHT: 2,  # Accelrating to the right: Action(2)
+            pygame.K_DOWN: 1,  # No acceleration: Action(1)
+        }
+
+    def get_action(self, pressed_key):
+        """
+        Map pressed key to a corresponding action.
+
+        Args:
+           pressed_key: Key code of the pressed key
+
+        Returns:
+           int: Action corresponding to the pressed key
+        """
+        # Set default behavior to DOWN button. This way the mountain car won't move if
+        # no signal is detected.
+        return self.KEY_MAPPING.get(pressed_key, self.KEY_MAPPING[pygame.K_DOWN])
 
 class DeviceDataLoader:
     """

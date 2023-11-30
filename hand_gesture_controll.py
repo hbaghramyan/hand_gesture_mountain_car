@@ -14,6 +14,8 @@
 # mountain car and play the game.
 # ---------------------------------------------------------------------------------------
 
+import time
+
 import pickle
 from PIL import Image
 import torch
@@ -152,10 +154,27 @@ recognizer = GestureRecognizer(
 # Open the video capture
 cap = cv2.VideoCapture(0)
 
+# Desired frame rate (frames per second)
+fps = 2  # Adjust this value as needed
+
+# Calculate the interval between each frame (in seconds)
+frame_interval = 1.0 / fps
+
 while True:
+    # Record the start time
+    start_time = time.time()
+
+    # Capture frame-by-frame
     ret, frame = cap.read()
+
     if not ret:
         break
+
+    # Calculate remaining time for the frame
+    time_to_wait = frame_interval - (time.time() - start_time)
+    
+    if time_to_wait > 0:
+        time.sleep(time_to_wait)
 
     # Recognize gesture and handle action
     class_index = recognizer.recognize_gesture(frame)
