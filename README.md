@@ -42,3 +42,7 @@ Allows you to play the MountainCar-v0 environment using the hand gestures recogn
 
 **Note**: Make sure that both scripts are running simultaneously for the hand gesture control to work correctly with the MountainCar environment.
 
+## Demo
+
+![MountainCar controll demo](demo.gif)
+
