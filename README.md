@@ -44,5 +44,5 @@ Allows you to play the MountainCar-v0 environment using the hand gestures recogn
 
 ## Demo
 
-![MountainCar controll demo](demo.gif)
+![MountainCar controll demo](https://github.com/hbaghramyan/hand_gesture_mountain_car/blob/dev_AR/demo.gif?raw=true)
 
