@@ -1,7 +1,11 @@
+import os
+
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from utils_funcs import to_device, accuracy, conv_block
+
+os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 import pygame
 
 class Car:
