@@ -28,8 +28,7 @@ def train_dl(train_path):
         train_path,
         transform=tt.Compose(
             [
-                tt.Resize(64),
-                tt.RandomCrop(64),
+                tt.Resize((64, 48)),
                 tt.ToTensor(),
             ]
         ),

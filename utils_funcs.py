@@ -1,6 +1,7 @@
 # native imports
 import os
 import argparse
+import time
 
 # third-party imports
 import torch
@@ -210,7 +211,8 @@ def fit_one_cycle(
         history.append(result)
 
         # save model checkpoint for the current epoch
-        checkpoint_file = f"{checkpoint_dir}/model_epoch.pth"
+        timestr = time.strftime("%Y%m%d-%H%M%S")
+        checkpoint_file = f"{checkpoint_dir}/model_epoch_{timestr}.pth"
         torch.save(model.state_dict(), checkpoint_file)
 
     return history
