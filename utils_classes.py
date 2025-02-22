@@ -5,8 +5,9 @@ import torch.nn as nn
 import torch.nn.functional as F
 from utils_funcs import to_device, accuracy, conv_block
 
-os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
+os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "hide"
 import pygame
+
 
 class Car:
     def __init__(self, env):
@@ -42,10 +43,12 @@ class Car:
         # no signal is detected.
         return self.KEY_MAPPING.get(pressed_key, self.KEY_MAPPING[pygame.K_DOWN])
 
+
 class DeviceDataLoader:
     """
     Utility class to move batches of data to a desired device.
     """
+
     def __init__(self, data_loader, device):
         self.data_loader = data_loader
         self.device = device
@@ -64,8 +67,10 @@ class DeviceDataLoader:
 
 class ImageClassificationBase(nn.Module):
     """
-    Base class for image classification tasks. Provides methods for training and validation steps.
+    Base class for image classification tasks. Provides methods
+    for training and validation steps.
     """
+
     def training_step(self, batch):
         """
         Compute the loss for a batch of training data.
@@ -102,10 +107,12 @@ class ImageClassificationBase(nn.Module):
         Compute the average validation loss and accuracy over an epoch.
 
         Args:
-            outputs (list): List of dictionaries containing individual batch losses and accuracies.
+            outputs (list): List of dictionaries containing
+            individual batch losses and accuracies.
 
         Returns:
-            dict: A dictionary containing the average validation loss and accuracy for the epoch.
+            dict: A dictionary containing the average validation loss
+            and accuracy for the epoch.
         """
         batch_losses = [x["val_loss"] for x in outputs]
         epoch_loss = torch.stack(batch_losses).mean()  # Combine losses
@@ -119,19 +126,18 @@ class ImageClassificationBase(nn.Module):
 
         """
         print(
-            "Epoch [{}], last_lr: {:.5f}, train_loss: {:.4f}, val_loss: {:.4f}, val_acc: {:.4f}".format(
-                epoch,
-                result["lrs"][-1],
-                result["train_loss"],
-                result["val_loss"],
-                result["val_acc"],
-            )
+            f"Epoch [{epoch}], last_lr: {result['lrs'][-1]:.5f}, "
+            f"train_loss: {result['train_loss']:.4f}, "
+            f"val_loss: {result['val_loss']:.4f}, "
+            f"val_acc: {result['val_acc']:.4f}"
         )
+
 
 class ResNet9(ImageClassificationBase):
     """
     A simplified implementation of the ResNet-9 architecture for image classification.
     """
+
     def __init__(self, num_classes, in_channels=3):
         """
         Initialize the ResNet9 model.
@@ -169,9 +175,9 @@ class ResNet9(ImageClassificationBase):
         """
         out = self.conv1(batch)
         out = self.conv2(out)
-        out = self.res1(out) + out # Residual connection
+        out = self.res1(out) + out  # Residual connection
         out = self.conv3(out)
         out = self.conv4(out)
-        out = self.res2(out) + out # Residual connection
+        out = self.res2(out) + out  # Residual connection
         out = self.classifier(out)
         return out

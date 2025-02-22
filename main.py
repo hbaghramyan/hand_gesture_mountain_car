@@ -1,16 +1,15 @@
-# source
-# https://www.kaggle.com/code/mihirpaghdal/intel-image-classification-with-pytorch
-
 # This script provides an implementation of the image classification task using PyTorch. It uses traines a ResNet9
 # It is structured to allow for the training, validation, and testing of the model.
 
-# local function imports
+# native depndencies
 import pickle
 import time
+
+# third-party imports
 import torch
 from omegaconf import OmegaConf
 
-# local imports
+# local dependencies
 from utils_funcs import (
     show_batch,
     get_default_device,
@@ -61,7 +60,9 @@ def main():
     with open("stats.pkl", "wb") as file:
         pickle.dump(stats, file)
 
-    train_dl, valid_dl, no_of_classes = prepare_data(train_configs["n_batch"], stats, train_path)
+    train_dl, valid_dl, no_of_classes = prepare_data(
+        train_configs["n_batch"], stats, train_path
+    )
 
     # save a batch of images from the training set
     show_batch(train_dl, stats, batch_images_path)

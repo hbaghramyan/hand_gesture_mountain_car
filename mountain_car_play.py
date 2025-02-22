@@ -20,9 +20,9 @@ from utils_classes import Car
 # challenge using RL, but control the environment with handgestures. Since we want a smooth
 # play feel, the 'max_episode_steps' are increased to 10.000 steps. See: https://github.com/openai/gym/wiki/FAQ
 gym.envs.register(
-    id='MountainCarPlay-v0',
-    entry_point='gym.envs.classic_control:MountainCarEnv',
-    max_episode_steps=10000, # Regula MountainCar-v0 env uses 200
+    id="MountainCarPlay-v0",
+    entry_point="gym.envs.classic_control:MountainCarEnv",
+    max_episode_steps=10000,  # Regula MountainCar-v0 env uses 200
     reward_threshold=-110.0,
 )
 
@@ -45,7 +45,7 @@ while True:
         if event.type == pygame.KEYDOWN:
             # Check for key presses
             pressed_key = event.key
-            #print(pressed_key)
+            # print(pressed_key)
             # Get corresponding action from the Car class
             action = car.get_action(pressed_key)
             print(action)
@@ -57,7 +57,7 @@ while True:
 
             # Print the observation, reward, and info
             if terminated or truncated:
-                #print(f"Observation: {observation}, Reward: {reward}, Info: {info}")
+                # print(f"Observation: {observation}, Reward: {reward}, Info: {info}")
                 observation, info = env.reset()
 
 # Pause to control loop speed

@@ -148,7 +148,7 @@ recognizer = GestureRecognizer(
     font_color=(0, 255, 0),
     text_position=(100, 200),
     thickness=2,
-    stats=stats_saved
+    stats=stats_saved,
 )
 
 # Open the video capture
@@ -172,7 +172,7 @@ while True:
 
     # Calculate remaining time for the frame
     time_to_wait = frame_interval - (time.time() - start_time)
-    
+
     if time_to_wait > 0:
         time.sleep(time_to_wait)
 
