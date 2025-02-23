@@ -14,12 +14,15 @@ more_acc_n
 results
 train_ARG
 prelim
+checkpoints/
 
 *.csv
 *.joblib
 .flake8
 uv.lock
 .vscode
+results/stats.pkl
+results/main-log.log
 
 
 # Temporary OS-related files

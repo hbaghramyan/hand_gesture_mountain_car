@@ -1,0 +1,20 @@
+train:
+  n_batch: 64
+  epochs: 20
+  max_lr: 0.01
+  grad_clip: 0.1
+  weight_decay: 1e-4
+  opt_func: 'Adam'
+  train_path: 'train_ARG'
+paths:
+  batches: 'results/batch_images.png'
+  loss: 'results/loss_vs_epochs.png'
+  lr: 'results/lr_vs_batch_no.png'
+  model: 'checkpoints/model_epoch_20231208-134217.pth'
+  stats: 'results/stats.pkl'
+car_env:
+  id: 'MountainCarPlay-v0'
+  render: 'human'
+  entry: 'gym.envs.classic_control:MountainCarEnv'
+  steps: 100000
+  threshold: -110.0

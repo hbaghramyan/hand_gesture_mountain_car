@@ -8,11 +8,20 @@ A collaborative space to implement hand gesture control for OpenAI Gym's classic
 
 ## Setup and Requirements
 
-Create and activate a suitable conda environment named `mnt_car`:
+Create and activate a suitable conda environment named `car`:
 
+For macOS and Linux
 ```bash
-conda env create -f environment.yaml
-conda activate mnt_car
+wget -qO- https://astral.sh/uv/install.sh | sh 
+uv sync
+source .venv/bin/activate
+```
+
+For Windows
+```bash
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+uv sync
+.venv\Scripts\Activate.ps1
 ```
 
 ## Execution
@@ -38,17 +47,7 @@ Allows you to play the MountainCar-v0 environment using the hand gestures recogn
 
 ### Training 
 
-To train your own gesture classifier run `main.py` and specify the training directory and all the other parameters in `training.yaml`:
-
-```yaml
-n_batch: 64
-epochs: 20
-max_lr: 0.01
-grad_clip: 0.1
-weight_decay: 1e-4
-opt_func: 'Adam'
-train_path: 'C:\Users\henri\Documents\works\mountain_car\train_ARG'
-```
+To train your own gesture classifier run `src/train.py` and specify the training directory and all the other parameters in `configs/training.yaml`.
 
 Directories with different gestures should be present in the training directory following the name convention for each class: `acc_l`, `acc_n` and `acc_r`. The checkpoints are being saved in the `checkpoints` directory following the date and time. Please make sure to have the same number of training examples per class.
 

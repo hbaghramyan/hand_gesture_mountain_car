@@ -6,21 +6,11 @@
     "configurations": [
         {
             "name": "Python: Current File",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${file}",
             "console": "integratedTerminal",
             "justMyCode": true,
-            "args": [
-                "--hyper_params_config_path",
-                "configs/training.yaml",
-                "--batch_images_path",
-                "results/batch_images.png",
-                "--loss_image_path",
-                "results/loss_vs_epochs.png",
-                "--lr_image_path",
-                "results/lr_vs_batch_no.png",
-            ]
         }
     ]
 }
