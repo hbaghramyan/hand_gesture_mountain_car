@@ -6,6 +6,15 @@ train:
   weight_decay: 1e-4
   opt_func: 'Adam'
   train_path: 'train_ARG'
+prep: # data prep and recording args
+  h: 64
+  w: 48
+  val_split: 0.2
+  train_nw: 8
+  val_nw: 2
+  frame: 2
+  n_classes: 3
+  n_channels: 3 
 paths:
   batches: 'results/batch_images.png'
   loss: 'results/loss_vs_epochs.png'
@@ -18,3 +27,11 @@ car_env:
   entry: 'gym.envs.classic_control:MountainCarEnv'
   steps: 100000
   threshold: -110.0
+show:
+  font: 'FONT_HERSHEY_SIMPLEX'
+  scale: 1.0
+  color: (0, 255, 0)
+  position: (100, 200)
+  thickness: 2
+capture:
+  fr: 2

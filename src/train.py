@@ -1,5 +1,6 @@
-# This script provides an implementation of the image classification task using PyTorch. It uses traines a ResNet9
-# It is structured to allow for the training, validation, and testing of the model.
+# This script provides an implementation of the image classification task using PyTorch.
+# It uses ResNet9 and is structured to allow for the training, validation,
+# and testing of the model.
 
 # native depndencies
 import pickle

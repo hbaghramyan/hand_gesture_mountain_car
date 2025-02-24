@@ -1,11 +1,13 @@
-# Description: Play MountainCar-v0 environment with hand gesture recognition.
+# Description: Play MountainCar-v0 environment using the keyboard.
+# Left arrow key: Accelerate left
+# Down arrow key: Don't accelerate
+# Right arrow key: Accelerate right
 # Refs:
 #  1. https://www.gymlibrary.dev/
 #  2. https://www.geeksforgeeks.org/pygame-event-handling/
 ####################################################################
 
 # native dependencies
-import time
 import sys
 import os
 
@@ -45,27 +47,22 @@ gym.envs.register(
 env = gym.make(id, render_mode=render)
 env.reset()
 
-# Instantiate the Car class
+# instantiate the Car class
 car = Car(env)
 
-# Render the environment
+# render the environment
 env.render()
 
-# Main loop
 while True:
-    # Event handling
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
         if event.type == pygame.KEYDOWN:
-            # Check for key presses
             pressed_key = event.key
-            # print(pressed_key)
-            # Get corresponding action from the Car class
             action = car.get_action(pressed_key)
             print(action)
-            # Take a step in the environment
+            # take a step in the environment
             observation, reward, terminated, truncated, info = env.step(action)
 
             # Render the environment
@@ -73,8 +70,4 @@ while True:
 
             # Print the observation, reward, and info
             if terminated or truncated:
-                # print(f"Observation: {observation}, Reward: {reward}, Info: {info}")
-                observation, info = env.reset()
-
-# Pause to control loop speed
-time.sleep(5)
+                env.reset()

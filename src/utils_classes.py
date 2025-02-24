@@ -1,16 +1,29 @@
+# nativ dependencies
+from enum import Enum
 import os
+import gym
 
+# third-party dependencies
+from PIL import Image
 import torch
+import torchvision.transforms as tt
 import torch.nn as nn
 import torch.nn.functional as F
+import cv2
+from pynput.keyboard import Key, Controller
+
+# local dependencies
 from utils_funcs import to_device, accuracy, conv_block
 
 os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "hide"
 import pygame
 
+# contoller to send keyboard signals
+keyboard = Controller()
+
 
 class Car:
-    def __init__(self, env):
+    def __init__(self, env: gym.Env):
         """
         Initialize the Car class.
 
@@ -29,7 +42,7 @@ class Car:
             pygame.K_DOWN: 1,  # No acceleration: Action(1)
         }
 
-    def get_action(self, pressed_key):
+    def get_action(self, pressed_key: int):
         """
         Map pressed key to a corresponding action.
 
@@ -138,13 +151,13 @@ class ResNet9(ImageClassificationBase):
     A simplified implementation of the ResNet-9 architecture for image classification.
     """
 
-    def __init__(self, num_classes, in_channels=3):
+    def __init__(self, num_classes: int, in_channels: int):
         """
         Initialize the ResNet9 model.
 
         Args:
             num_classes (int): Number of output classes.
-            in_channels (int, optional): Number of input channels. Default is 3 (RGB).
+            in_channels (int): Number of input channels.
         """
         super().__init__()
 
@@ -175,9 +188,92 @@ class ResNet9(ImageClassificationBase):
         """
         out = self.conv1(batch)
         out = self.conv2(out)
-        out = self.res1(out) + out  # Residual connection
+        out = self.res1(out) + out
         out = self.conv3(out)
         out = self.conv4(out)
-        out = self.res2(out) + out  # Residual connection
+        out = self.res2(out) + out
         out = self.classifier(out)
         return out
+
+
+class Gesture(Enum):
+    GO_LEFT = 0
+    DONT_MOVE = 1
+    GO_RIGHT = 2
+
+
+class GestureRecognizer:
+    def __init__(
+        self,
+        model_path: str,
+    ):
+        """
+        Initialize the GestureRecognizer.
+
+        Args:
+            model_path (str): Path to the pre-trained model checkpoint.
+        """
+        self.model_path = model_path
+
+    def _preprocess_frame(self, frame, stats: torch.Tensor):
+        """
+        Preprocess the input frame.
+
+        Args:
+            frame: Input frame captured from the video source.
+
+        Returns:
+            stats (torch.Tensor): Preprocessed input tensor for the model.
+        """
+
+        # Define the same set of transformations applied during training
+        # to the captured frame.
+        transform = tt.Compose(
+            [
+                tt.Resize((64, 48)),
+                tt.ToTensor(),
+                tt.Normalize(*stats, inplace=True),
+            ]
+        )
+
+        pil_image = Image.fromarray(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
+        input_tensor = transform(pil_image).unsqueeze(0)
+        return input_tensor
+
+    def recognize_gesture(self, frame, stats, model):
+        """
+        Recognize the gesture from the input frame.
+
+        Args:
+            frame: Input frame captured from the video source.
+
+        Returns:
+            int: Predcited class index representing the recognized gesture.
+        """
+        input_tensor = self._preprocess_frame(frame, stats)
+
+        with torch.no_grad():
+            output = model(input_tensor)
+
+        _, predicted = torch.max(output, 1)
+
+        class_index = predicted.item()
+
+        return class_index
+
+    def handle_gesture(self, gesture):
+        """
+        Perform action based on the recognized gesture.
+
+        Args:
+            gesture (Gesture): Recognized gesture class.
+        """
+        if gesture == Gesture.GO_LEFT:
+            keyboard.press(Key.left)
+            keyboard.release(Key.left)
+        elif gesture == Gesture.DONT_MOVE:
+            keyboard.press(Key.down)
+            keyboard.release(Key.down)
+        elif gesture == Gesture.GO_RIGHT:
+            keyboard.press(Key.right)
+            keyboard.release(Key.right)
