@@ -4,7 +4,10 @@ A collaborative space to implement hand gesture control for OpenAI Gym's classic
 
 ## Demo
 
-![MountainCar controll demo](https://github.com/hbaghramyan/hand_gesture_mountain_car/blob/dev_AR/demo.gif?raw=true)
+<p float="left">
+  <img src="results/arg.gif" width="45%" />
+  <img src="results/hb.gif" width="45%" />
+</p>
 
 ## Setup and Requirements
 
@@ -26,7 +29,7 @@ uv sync
 
 ## Execution
 
-To properly control the MountainCar using hand gestures, ensure you run `hand_gesture_control.py` and `mountain_car_play.py` scripts at the same time. When `gesture-controll.py` starts recognizing your hand you can now run `mountain-car-play.py`. The game window will now be displayed. Click on the window and then start moving your index finger to left or right.
+To properly control the MountainCar using hand gestures, ensure you run `uv run src/hand_gesture_control.py` and `uv run src/mountain_car_play.py` scripts at the same time. When `gesture-controll.py` starts recognizing your hand you can now run `mountain-car-play.py`. The game window will now be displayed. Click on the window and then start moving your index finger to left or right.
 
 ### hand_gesture_control.py
 

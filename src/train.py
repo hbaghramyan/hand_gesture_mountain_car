@@ -5,10 +5,13 @@
 # native depndencies
 import pickle
 import time
+import os
 
 # third-party imports
 import torch
 from omegaconf import OmegaConf
+from dotenv import load_dotenv
+
 
 # local dependencies
 from utils_funcs import (
@@ -18,14 +21,13 @@ from utils_funcs import (
     evaluate,
     fit_one_cycle,
 )
-from utils_funcs import plot_losses, plot_lrs, create_parser
+from utils_funcs import plot_losses, plot_lrs
 from utils_classes import ResNet9
 from data_preprocessing import prepare_data
 from get_stats import main as get_stats
 
-# Set seed for generating random numbers for reproducibility
-RANDOM_SEED = 42
-torch.manual_seed(RANDOM_SEED)
+# setting seed reproducibility
+torch.manual_seed(42)
 
 
 def main():
@@ -34,34 +36,33 @@ def main():
     and validation.
     """
 
-    # create command line parser and parse the command line arguments
-    cmd_parser = create_parser()
-    cmd_args = cmd_parser.parse_args()
+    load_dotenv()
+
+    config_path = os.getenv("CONFIG_PATH", None)
+
+    # loading the config file
+    conf = OmegaConf.load(config_path)
 
     # get paths to config files and data from the command line arguments
-    hyper_params_config_path = cmd_args.hyper_params_config_path
-    batch_images_path = cmd_args.batch_images_path
-    loss_image_path = cmd_args.loss_image_path
-    lr_image_path = cmd_args.lr_image_path
-
-    # load the hyper-parameters config file
-    train_configs = OmegaConf.load(hyper_params_config_path)
-    train_configs = OmegaConf.to_object(train_configs)
+    train_configs = conf.train
+    batch_images_path = conf.paths.batches
+    loss_image_path = conf.paths.loss
+    lr_image_path = conf.paths.lr
 
     # get stats for the data
     # training path
-    train_path = train_configs["train_path"]
+    train_path = train_configs.train_path
     stats = get_stats(train_path)
     # stats = (
     #     torch.Tensor([0.6537, 0.5984, 0.5382]),
     #     torch.Tensor([0.2901, 0.2970, 0.2958]),
     # )
     # prepare the data loaders
-    with open("stats.pkl", "wb") as file:
+    with open("stats_new.pkl", "wb") as file:
         pickle.dump(stats, file)
 
     train_dl, valid_dl, no_of_classes = prepare_data(
-        train_configs["n_batch"], stats, train_path
+        train_configs.n_batch, stats, train_path
     )
 
     # save a batch of images from the training set
@@ -79,11 +80,11 @@ def main():
     print(history)
 
     # extract the hyperparameters from the config
-    epochs = train_configs["epochs"]
-    max_lr = train_configs["max_lr"]
-    grad_clip = train_configs["grad_clip"]
-    weight_decay = train_configs["weight_decay"]
-    opt_func = getattr(torch.optim, train_configs["opt_func"])
+    epochs = train_configs.epochs
+    max_lr = train_configs.max_lr
+    grad_clip = train_configs.grad_clip
+    weight_decay = train_configs.weight_decay
+    opt_func = getattr(torch.optim, train_configs.opt_func)
 
     # record the start time
     start_time = time.time()
